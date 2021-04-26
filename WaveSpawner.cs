@@ -14,13 +14,15 @@ public class WaveSpawner : MonoBehaviour
         public float rate;
     }
     public Wave[] waves;
-    public Transform enemyPrefab;
-    public Transform spawnPoint;
+    public Transform enemyPrefab1;
+    public Transform enemyPrefab2;
+    public Transform enemyPrefab3;
+    public Transform spawnPoint1;
+    public Transform spawnPoint2;
+    public Transform spawnPoint3;
 
     public float timeBetweenWaves = 5f;
     private float countdown = 2f;
-
-    public Text waveCountdownText;
 
     private int waveIndex = 0;
 
@@ -35,7 +37,6 @@ public class WaveSpawner : MonoBehaviour
 
         countdown -= Time.deltaTime;
 
-        waveCountdownText.text = Mathf.Round(countdown).ToString();
     }
 
     IEnumerator SpawnWave()
@@ -52,7 +53,9 @@ public class WaveSpawner : MonoBehaviour
 
     void SpawnEnemy()
     {
-        Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+        Instantiate(enemyPrefab1, spawnPoint1.position, spawnPoint1.rotation);
+        Instantiate(enemyPrefab2, spawnPoint2.position, spawnPoint2.rotation);
+        Instantiate(enemyPrefab3, spawnPoint3.position, spawnPoint3.rotation);
 
     }
 

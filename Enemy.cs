@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float speed = 10f;
+    public float speed = 2f;
 
     private Transform target;
     private int wavepointIndex = 0;
@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         target = Waypoints.points[0];
+        
     }
 
 
@@ -36,6 +37,7 @@ public class Enemy : MonoBehaviour
 
         wavepointIndex++;
         target = Waypoints.points[wavepointIndex];
+        
     }
 
 
