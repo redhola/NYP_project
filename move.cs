@@ -7,6 +7,10 @@ public class move : MonoBehaviour
 
     public float movementSpeed = 7;
     public Animator animator;
+    public Transform attackPoint;
+    public float attackRange = 5;
+    public int attackDamage = 40;
+    public LayerMask enemyLayers;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,5 +35,34 @@ public class move : MonoBehaviour
         if( Input.GetAxis("Horizontal") > 0)
             characterFlip.x = 1;
         transform.localScale = characterFlip;
+
+        if( Input.GetKeyDown("space"))
+        {
+            attack();
+            
+
+        }
+        
     }
+
+    void attack()
+    {
+        animator.SetTrigger("attack");
+        Collider2D[] hitenemies = Physics2D.OverlapCircleAll(attackPoint.position,attackRange,enemyLayers);
+        Debug.Log(hitenemies.Length);
+        
+        foreach(Collider2D enemy in hitenemies)
+        {
+            enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if(attackPoint == null)return;
+
+        Gizmos.DrawWireSphere(attackPoint.position,attackRange);
+    }
+
+    
 }

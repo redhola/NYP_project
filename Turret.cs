@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,8 +8,8 @@ public class Turret : MonoBehaviour
     public GameObject bulletPrefab;
     private float fireCountdown;
     public float fireRate = 2;
-    public float range = 12;
-    public int Cost = 200;
+    public float range = 7;
+     static public float damageAmount = 50;
     void Start(){
         InvokeRepeating("UpdateTarget",0f,0.5f);
     }

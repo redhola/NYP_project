@@ -23,7 +23,6 @@ public class WaveSpawner : MonoBehaviour
 
     public float timeBetweenWaves = 5f;
     private float countdown = 2f;
-
     private int waveIndex = 0;
 
     private void Update()
@@ -36,7 +35,6 @@ public class WaveSpawner : MonoBehaviour
         }
 
         countdown -= Time.deltaTime;
-
     }
 
     IEnumerator SpawnWave()
