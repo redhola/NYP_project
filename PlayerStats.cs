@@ -6,9 +6,16 @@ public class PlayerStats : MonoBehaviour {
     public static int Money;
     public int startMoney = 1000;
 
-    private void Start() // Eðer gameMasterdan fiyat deðiþtirmek istersen startý update ile deðiþtir.
+    public static int Lives;
+    public int startLives = 20;
+
+    public static int Rounds;
+    private void Start()
     {
         Money = startMoney;
+        Lives = startLives;
+
+        Rounds = -1;
     }
 
 

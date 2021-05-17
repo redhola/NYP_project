@@ -30,7 +30,7 @@ public class Enemy : MonoBehaviour
     {
         if (wavepointIndex >= Waypoints.points.Length - 1)
         {
-            Destroy(gameObject);
+            EndPath();
             return;
         }
 
@@ -40,6 +40,11 @@ public class Enemy : MonoBehaviour
         
     }
 
+    void EndPath ()
+    {
+        PlayerStats.Lives--;
+        Destroy(gameObject);
+    }
 
 }
 

@@ -12,10 +12,12 @@ public class node : MonoBehaviour
 
     private Color startColor;
 
-    [Header ("Optional")]
+    [HideInInspector]
     public GameObject turret;
-
-    
+    [HideInInspector]
+    public TurretBlueprint turretBlueprint;
+    [HideInInspector]
+    public bool isUpgraded = false;
 
     public float range = 7;
 
@@ -41,16 +43,66 @@ public class node : MonoBehaviour
         if (EventSystem.current.IsPointerOverGameObject()) //Mouse'un önünde bir ui elemanı olup olmadığını kontrol ediyoruz ki istenmeyen tıklamalar oluşmasın.
             return;
 
-        if (!buildManager.CanBuild)
-            return;
-
         if (turret != null)
         {
-            Debug.Log("You can't build there");
+            buildManager.SelectNode(this);
+
             return;
         }
 
-        buildManager.BuildTurretOn(this);
+        if (!buildManager.CanBuild)
+            return;
+
+        BuildTurret(buildManager.GetTurretToBuild());
+    }
+
+    void BuildTurret(TurretBlueprint blueprint)
+    {
+        if (PlayerStats.Money < blueprint.cost)
+        {
+            Debug.Log("Not enough gold to build that!");
+            return;
+        }
+
+        PlayerStats.Money -= blueprint.cost;
+
+        GameObject _turret = (GameObject)Instantiate(blueprint.prefab, GetBuildPosition(), Quaternion.identity);
+        turret = _turret;
+
+        turretBlueprint = blueprint;
+
+        Debug.Log("Turret build! ");
+
+    }
+
+    public void UpgradeTurret()//Build turret kısmındaki scripti alıp, prefab, blueprint'i ve işlemi onaylamak için bool cebri koyuyoruz. 
+    {                          //Son olarak da gelişkin kule geldiği için diğerini destroy komutu ile yok ediyoruz
+
+        if (PlayerStats.Money < turretBlueprint.upgradeCost)
+        {
+            Debug.Log("Not enough gold to upgrade that!");
+            return;
+        }
+
+        PlayerStats.Money -= turretBlueprint.upgradeCost;
+
+        Destroy(turret);
+
+        GameObject _turret = (GameObject)Instantiate(turretBlueprint.upgradedPrefab, GetBuildPosition(), Quaternion.identity);
+        turret = _turret;
+
+        isUpgraded = true;
+
+        Debug.Log("Turret upgraded! ");
+
+    }
+
+    public void SellTurret()
+    {
+        PlayerStats.Money += turretBlueprint.GetSellAmount();
+
+        Destroy(turret);
+        turretBlueprint = null;
     }
 
     void OnMouseEnter()

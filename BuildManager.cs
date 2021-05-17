@@ -22,29 +22,47 @@ public class BuildManager : MonoBehaviour
     public GameObject anotherTurretPrefab;
 
     private TurretBlueprint turretToBuild;
+    public node selectedNode;
+
+    public NodeUI nodeUI;
+
 
     public bool CanBuild { get { return turretToBuild != null; } } //Shopa týklayýp týklamadýðýmýzý kontrol ediyoruz
     public bool HasMoney { get { return PlayerStats.Money >= turretToBuild.cost; } }//
 
-    public void BuildTurretOn (node node)
+ 
+
+    public void SelectNode (node node)
     {
-        if(PlayerStats.Money < turretToBuild.cost)
+        if (selectedNode == node)
         {
-            Debug.Log("Not enough gold to build that!");
+            DeselectNode();
             return;
         }
 
-        PlayerStats.Money -= turretToBuild.cost;
+        selectedNode = node;
+        turretToBuild = null;
 
-        GameObject turret = (GameObject)Instantiate(turretToBuild.prefab, node.GetBuildPosition(), Quaternion.identity);
-        node.turret = turret;
+        nodeUI.SetTarget(node);
+    }
 
-        Debug.Log("Turret build! Money left: " + PlayerStats.Money);
+    public void DeselectNode()
+    {
+        selectedNode = null;
+        nodeUI.Hide();
     }
 
     public void SelectTurretToBuild (TurretBlueprint turret)
     {
         turretToBuild = turret;
+        selectedNode = null;
+
+        nodeUI.Hide();
+    }
+
+    public TurretBlueprint GetTurretToBuild ()
+    {
+        return turretToBuild;
     }
 }
 
