@@ -1,15 +1,19 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
-    public float speed = 10f;
-
+    public float speed = 2f;
+    public float startHealth = 100;
+    private float health;
     private Transform target;
     private int wavepointIndex = 0;
+    public Image healthbar;
 
     private void Start()
     {
         target = Waypoints.points[0];
+        health = startHealth;
     }
 
 
@@ -36,6 +40,19 @@ public class Enemy : MonoBehaviour
 
         wavepointIndex++;
         target = Waypoints.points[wavepointIndex];
+        
+    }
+
+    public void TakeDamage(float amount)
+    {
+        health -= amount;
+
+        healthbar.fillAmount = health / startHealth ;
+
+        if(health <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
 
