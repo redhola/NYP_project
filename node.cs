@@ -1,17 +1,25 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Node : MonoBehaviour{
-
+public class node : MonoBehaviour
+{
     public Color hovercolor;
-
-    public GameObject turret;
-
+    public Vector3 possitionOffset;
     private SpriteRenderer rend;
+    public Color notEnoughMoneyColor; //pop-up yazÄ± Ã§Ä±karmayÄ± Ã¶ÄŸrenip onun yerine bunu koyacaÄŸÄ±z.
 
     private Color startColor;
+
+    [HideInInspector]
+    public GameObject turret;
+    [HideInInspector]
+    public TurretBlueprint turretBlueprint;
+    [HideInInspector]
+    public bool isUpgraded = false;
+
+    public float range = 7;
 
     BuildManager buildManager;
 
@@ -21,41 +29,111 @@ public class Node : MonoBehaviour{
         rend = GetComponent<SpriteRenderer>();
         startColor = rend.material.color;
 
-        buildManager = BuildManager.instance; //kýsaltma yapmak için
-           
+        buildManager = BuildManager.instance; //kÄ±saltma yapmak iÃ§in
+
+    }
+
+    public Vector3 GetBuildPosition()
+    {
+        return transform.position + possitionOffset;
     }
 
     private void OnMouseDown()
     {
-        if (EventSystem.current.IsPointerOverGameObject()) //Mouse'un önünde bir ui elemaný olup olmadýðýný kontrol ediyoruz ki istenmeyen týklamalar oluþmasýn.
-            return;
-
-        if (buildManager.GetTurretToBuild() == null)
+        if (EventSystem.current.IsPointerOverGameObject()) //Mouse'un Ã¶nÃ¼nde bir ui elemanÄ± olup olmadÄ±ÄŸÄ±nÄ± kontrol ediyoruz ki istenmeyen tÄ±klamalar oluÅŸmasÄ±n.
             return;
 
         if (turret != null)
         {
-            Debug.Log("You can't build there");
+            buildManager.SelectNode(this);
+
             return;
         }
 
-        GameObject turretToBuild = buildManager.GetTurretToBuild();
-        turret = (GameObject)Instantiate(turretToBuild, transform.position, transform.rotation);
+        if (!buildManager.CanBuild)
+            return;
+
+        BuildTurret(buildManager.GetTurretToBuild());
+    }
+
+    void BuildTurret(TurretBlueprint blueprint)
+    {
+        if (PlayerStats.Money < blueprint.cost)
+        {
+            Debug.Log("Not enough gold to build that!");
+            return;
+        }
+
+        PlayerStats.Money -= blueprint.cost;
+
+        GameObject _turret = (GameObject)Instantiate(blueprint.prefab, GetBuildPosition(), Quaternion.identity);
+        turret = _turret;
+
+        turretBlueprint = blueprint;
+
+        Debug.Log("Turret build! ");
+
+    }
+
+    public void UpgradeTurret()//Build turret kÄ±smÄ±ndaki scripti alÄ±p, prefab, blueprint'i ve iÅŸlemi onaylamak iÃ§in bool cebri koyuyoruz. 
+    {                          //Son olarak da geliÅŸkin kule geldiÄŸi iÃ§in diÄŸerini destroy komutu ile yok ediyoruz
+
+        if (PlayerStats.Money < turretBlueprint.upgradeCost)
+        {
+            Debug.Log("Not enough gold to upgrade that!");
+            return;
+        }
+
+        PlayerStats.Money -= turretBlueprint.upgradeCost;
+
+        Destroy(turret);
+
+        GameObject _turret = (GameObject)Instantiate(turretBlueprint.upgradedPrefab, GetBuildPosition(), Quaternion.identity);
+        turret = _turret;
+
+        isUpgraded = true;
+
+        Debug.Log("Turret upgraded! ");
+
+    }
+
+    public void SellTurret()
+    {
+        PlayerStats.Money += turretBlueprint.GetSellAmount();
+
+        Destroy(turret);
+        turretBlueprint = null;
     }
 
     void OnMouseEnter()
     {
-        if (EventSystem.current.IsPointerOverGameObject()) //Mouse'un önünde bir ui elemaný olup olmadýðýný kontrol ediyoruz ki istenmeyen týklamalar oluþmasýn.
+        if (EventSystem.current.IsPointerOverGameObject()) //Mouse'un Ã¶nÃ¼nde bir ui elemanÄ± olup olmadÄ±ÄŸÄ±nÄ± kontrol ediyoruz ki istenmeyen tÄ±klamalar oluÅŸmasÄ±n.
             return;
 
-        if (buildManager.GetTurretToBuild() == null) //Bunu koyduðumuz için kullanýcý sadece koymak üzere bir kule seçtiði zaman mouse'ýn durduðu alan belli edilecek. Aksi takdirde farklýlaþmasýna raðmen týklandýðýnda bir kule koyulamazdý.
+        if (buildManager.CanBuild) //Bunu koyduÄŸumuz iÃ§in kullanÄ±cÄ± sadece koymak Ã¼zere bir kule seÃ§tiÄŸi zaman mouse'Ä±n durduÄŸu alan belli edilecek. Aksi takdirde farklÄ±laÅŸmasÄ±na raÄŸmen tÄ±klandÄ±ÄŸÄ±nda bir kule koyulamazdÄ±.
             return;
 
-        rend.material.color = hovercolor;
+        if(buildManager.HasMoney)
+        {
+            rend.material.color = hovercolor;
+        }
+        else
+        {
+            rend.material.color = notEnoughMoneyColor;
+        }
+
+        
     }
 
     void OnMouseExit()
     {
         rend.material.color = startColor;
+    }
+
+
+    void OnDrawGizmos(){
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, range );
     }
 }
