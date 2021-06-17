@@ -18,8 +18,9 @@ public class BuildManager : MonoBehaviour
         instance = this;
     }
 
-    public GameObject standartTurretPrefab;
-    public GameObject anotherTurretPrefab;
+    public GameObject MoonTurretPrefab;
+    public GameObject RedTurretPrefab;
+    public GameObject LaserTurretPrefab;
 
     private TurretBlueprint turretToBuild;
     public node selectedNode;
@@ -27,7 +28,7 @@ public class BuildManager : MonoBehaviour
     public NodeUI nodeUI;
 
 
-    public bool CanBuild { get { return turretToBuild != null; } } //Shopa týklayýp týklamadýðýmýzý kontrol ediyoruz
+    public bool CanBuild { get { return turretToBuild != null; } } //Shopa tï¿½klayï¿½p tï¿½klamadï¿½ï¿½ï¿½mï¿½zï¿½ kontrol ediyoruz
     public bool HasMoney { get { return PlayerStats.Money >= turretToBuild.cost; } }//
 
  
@@ -36,7 +37,8 @@ public class BuildManager : MonoBehaviour
     {
         if (selectedNode == node)
         {
-            DeselectNode();
+            selectedNode= node;
+            nodeUI.Hide();
             return;
         }
 

@@ -46,7 +46,7 @@ public class node : MonoBehaviour
         if (turret != null)
         {
             buildManager.SelectNode(this);
-
+            Debug.Log("click");
             return;
         }
 
@@ -113,14 +113,14 @@ public class node : MonoBehaviour
         if (buildManager.CanBuild) //Bunu koyduğumuz için kullanıcı sadece koymak üzere bir kule seçtiği zaman mouse'ın durduğu alan belli edilecek. Aksi takdirde farklılaşmasına rağmen tıklandığında bir kule koyulamazdı.
             return;
 
-        if(buildManager.HasMoney)
+        /*if(buildManager.HasMoney)
         {
             rend.material.color = hovercolor;
         }
         else
         {
             rend.material.color = notEnoughMoneyColor;
-        }
+        }*/
 
         
     }

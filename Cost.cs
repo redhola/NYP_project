@@ -10,6 +10,6 @@ public class Cost : MonoBehaviour
 
     void Update()
     {
-        CostText.text = cost.ToString();
+        CostText.text = cost.ToString() + " G";
     }
 }
