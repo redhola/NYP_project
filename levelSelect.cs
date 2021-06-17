@@ -4,18 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class levelSelect : MonoBehaviour
 {
-
-    public SceneFader fader;
-
-    public void Select (string levelName)
-    {
-
-        fader.FadeTo(levelName);
-
-    }
-  
-
-
     public void level01()
     {
 

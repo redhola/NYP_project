@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
         if (GameIsOver)
             return;
 
-        if (Input.GetKeyDown("e"))
+        if (Input.GetKeyDown("e")) //Silmeyi unutma
         {
             EndGame();
         }
@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void EndGame() // restart pause vs kýsýmlarý eklenecek
+    void EndGame() 
     {
         GameIsOver = true;
         gameOverUI.SetActive(true);

@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
         Target = target;
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         if(Target == null){
@@ -36,6 +36,8 @@ public class Bullet : MonoBehaviour
         Debug.Log("hit");
 
         Damage(Target);
+
+        Destroy(gameObject);
         
     }
 
