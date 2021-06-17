@@ -9,6 +9,6 @@ public class LivesUI : MonoBehaviour
     // Update is called once per frame
     void Update() // Optimal yolu bu degil, o yuzden sonrasýnda coroutine'e cevrilecek.
     {
-        livesText.text = "Lives : " + PlayerStats.Lives.ToString();
+        livesText.text = PlayerStats.Lives.ToString();
     }
 }

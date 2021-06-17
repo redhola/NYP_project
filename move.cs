@@ -11,23 +11,54 @@ public class move : MonoBehaviour
     public float attackRange = 5;
     public int attackDamage = 40;
     public LayerMask enemyLayers;
-    // Start is called before the first frame update
+    public GameObject RageUI;
+
+
     void Start()
     {
-        
+
     }
 
-    // Update is called once per frame
+    IEnumerator Slowmo()
+    {
+        Time.timeScale = 0.2f;
+        movementSpeed += 10;
+        yield return new WaitForSeconds(5f);
+        Time.timeScale = 1f;
+        movementSpeed -= 10;
+    }
+
+    IEnumerator DashMove()
+    {
+        movementSpeed += 20;
+        yield return new WaitForSeconds(.1f);
+        movementSpeed -= 20;
+    }
+
+    IEnumerator Rage()
+    {
+        RageUI.SetActive(true);
+        movementSpeed += 10;
+        Time.timeScale = 0.6f;
+        attackDamage += 15;
+        yield return new WaitForSeconds(8f);
+        RageUI.SetActive(false);
+        movementSpeed -= 10;
+        Time.timeScale = 1f;
+        attackDamage -= 15;
+    }
+
     void Update()
     {
 
         var movementX = Input.GetAxis("Horizontal");
-        transform.position += new Vector3(movementX,0,0) * Time.deltaTime * movementSpeed;
+        transform.position += new Vector3(movementX,0,0).normalized * Time.deltaTime * movementSpeed;
         var movementY = Input.GetAxis("Vertical");
-        transform.position += new Vector3(0,movementY,0) * Time.deltaTime *movementSpeed;
+        transform.position += new Vector3(0,movementY,0).normalized * Time.deltaTime * movementSpeed;
 
         animator.SetFloat("SpeedX", Mathf.Abs(movementX));
         animator.SetFloat("SpeedY", Mathf.Abs(movementY));
+
 
         Vector3 characterFlip = transform.localScale;
         if( Input.GetAxis("Horizontal") < 0)
@@ -42,8 +73,23 @@ public class move : MonoBehaviour
             
 
         }
-        
+        if (Input.GetKeyDown("v"))
+        {
+            StartCoroutine("DashMove");
+        }
+
+        if (Input.GetKeyDown("x"))
+        {
+            StartCoroutine("Slowmo");
+        }
+
+        if (Input.GetKeyDown("c"))
+        {
+            StartCoroutine("Rage");
+        }
+
     }
+
 
     void attack()
     {
