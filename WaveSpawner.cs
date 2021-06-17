@@ -1,61 +1,64 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class WaveSpawner : MonoBehaviour
 {
-
-    [System.Serializable]
-    public class Wave
-    {
-        public string name;
-        public Transform enemy;
-        public int count;
-        public float rate;
-    }
     public Wave[] waves;
-    public Transform enemyPrefab1;
-    public Transform enemyPrefab2;
-    public Transform enemyPrefab3;
     public Transform spawnPoint1;
-    public Transform spawnPoint2;
-    public Transform spawnPoint3;
-
+    private GameManager gameManager;
+    public static int EnemiesAlive = 0;
     public float timeBetweenWaves = 5f;
     private float countdown = 2f;
     private int waveIndex = 0;
 
     private void Update()
     {
-        if (countdown <= 0f)
-        {
-            StartCoroutine(SpawnWave());
-            countdown = timeBetweenWaves;
+        if (EnemiesAlive > 0)
+		{
+			return;
+		}
 
-        }
+		if (waveIndex == waves.Length)
+		{
+			
+			this.enabled = false;
+		}
 
-        countdown -= Time.deltaTime;
+		if (countdown <= 0f)
+		{
+			StartCoroutine(SpawnWave());
+			countdown = timeBetweenWaves;
+			return;
+		}
+
+		countdown -= Time.deltaTime;
+        
     }
 
     IEnumerator SpawnWave()
     {
-        waveIndex++;
+        
         PlayerStats.Rounds++;
+        Wave wave = waves[waveIndex];
+        
 
-        for (int i = 0; i < waveIndex; i++)
-        {
-            SpawnEnemy();
-            yield return new WaitForSeconds(0.5f);
+        foreach(EnemyBluePrint enemy in wave){
+            for(int i=0;i<enemy.Count;i++){
+                SpawnEnemy(enemy.Enemy);
+                EnemiesAlive++;
+                yield return new WaitForSeconds(enemy.Rate);
+            }
         }
+        waveIndex++;
+        
 
     }
 
-    void SpawnEnemy()
+    void SpawnEnemy(GameObject enemy)
     {
-        Instantiate(enemyPrefab1, spawnPoint1.position, spawnPoint1.rotation);
-        Instantiate(enemyPrefab2, spawnPoint2.position, spawnPoint2.rotation);
-        Instantiate(enemyPrefab3, spawnPoint3.position, spawnPoint3.rotation);
-
+        Instantiate(enemy, spawnPoint1.position, spawnPoint1.rotation);
     }
 
 }
